@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
+using TheEndpoint;
 
 var endpointConfiguration = new EndpointConfiguration("Samples.SimpleSaga");
 endpointConfiguration.EnableInstallers();
@@ -14,6 +15,8 @@ dialect.JsonBParameterModifier(
 persistence.ConnectionBuilder(() => new NpgsqlConnection("Server=localhost;Port=5432;Database=db_user;User Id=db_user;Password=your_password;"));
 endpointConfiguration.UseTransport<LearningTransport>();
 endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
+
+endpointConfiguration.Pipeline.Register(new FixTimeoutMessageVersionBehavior(), "Fix TimeoutMessage versions behavior");
 
 var endpointInstance = await Endpoint.Start(endpointConfiguration);
 
